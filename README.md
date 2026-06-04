@@ -78,20 +78,49 @@ If you want to contribute, please take a look at the [Contribution Guidelines](h
 The `main` branch is equivalent to a `dev` branch where development is done on - submit PRs here. The `release` branch is similar to a `stable` branch with the code of latest release.
 
 **Build Setup**:
-If you want to build the app, you need to install Node.js (latest LTS version recommended), a package manager like yarn and the [&nearr;&nbsp;Tauri development environment](https://tauri.app/start/prerequisites/).
-Then, depending on your use case you can run the commands below:
+
+Kanri is a [Tauri](https://tauri.app) desktop app: a Nuxt/Vue frontend (JavaScript/TypeScript) wrapped in a native Rust shell. Building it from scratch means installing two toolchains (Node.js and Rust) plus the platform build prerequisites. The steps below walk through it from nothing — the example commands target Windows, but the same five steps apply to macOS and Linux (substitute the platform-specific prerequisites in step 3).
+
+**Step 1 — Install Node.js**
+Download the **LTS** installer from [nodejs.org](https://nodejs.org) and run it, accepting the defaults. This gives you `node` and `npm`. Restart your terminal/editor afterwards so the new `PATH` is picked up.
+
+**Step 2 — Install Yarn**
+This project uses Yarn (1.x "classic"), not npm, to install dependencies. Once Node is installed:
 
 ```bash
-# Install dependencies
-yarn install
+npm install -g yarn
+```
 
-# Start debug tauri build
+**Step 3 — Install the Tauri (Rust) prerequisites**
+Follow the [&nearr;&nbsp;Tauri development environment](https://tauri.app/start/prerequisites/) guide for your OS. On Windows that means:
+- **Microsoft C++ Build Tools** — install from [here](https://visualstudio.microsoft.com/visual-cpp-build-tools/) and select the *"Desktop development with C++"* workload (this is the compiler Rust needs).
+- **WebView2** — already included in Windows 11; install only on older Windows versions.
+- **Rust** — install via [rustup](https://rustup.rs) (`rustup-init.exe`, default install).
+
+Restart your terminal/editor again so `cargo`/`rustc` land on your `PATH`.
+
+**Step 4 — Install the project's dependencies**
+From the project root:
+
+```bash
+yarn install
+```
+
+This downloads all the JavaScript packages. The Rust crates are downloaded and compiled on the first build (step 5), which is slow the first time and cached afterwards.
+
+**Step 5 — Run the app**
+
+```bash
+# Start the desktop app in development mode (with hot reload)
 yarn tauri dev
 
-# Build tauri for production
+# Build the app for production
 yarn generate
 yarn tauri build
 ```
+
+> [!NOTE]
+> `yarn tauri dev` launches the real desktop app and is what you usually want. `yarn dev` runs only the web frontend in a browser, where native features like file storage won't work. The first `yarn tauri dev` run is slow because Rust compiles from scratch; subsequent runs are fast.
 
 ---
 **Copyright (c) 2022-2026 trobonox (trobo@kanriapp.com)**. Licensed under GPL v3 (with some files under Apache 2.0 or other licenses stated in the files themselves).
